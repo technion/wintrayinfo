@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-native-windows-gui = {  version = "1.0.13", default-features = false, features = [ "tray-notification", "message-window",  "menu",  "cursor" ] }
+native-windows-gui = {  version = "1.0.13", default-features = false, features = [ "tray-notification", "message-window",  "menu",  "cursor", "image-decoder" ] }
 native-windows-derive = "1.0.5"
 whoami = "^1.2.3"
 ipconfig = "^0.3.1"

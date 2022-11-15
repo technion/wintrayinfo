@@ -9,12 +9,15 @@ use nwd::NwgUi;
 use nwg::NativeUi;
 use std::format;
 
+// Bundling the icon means we don't need to ship the file separately
+static ICON_DATA: &'static [u8] = include_bytes!("../logo.ico");
+
 #[derive(Default, NwgUi)]
 pub struct SystemTray {
     #[nwg_control]
     window: nwg::MessageWindow,
 
-    #[nwg_resource(source_file: Some("./logo.ico"))]
+    #[nwg_resource(source_bin: Some(ICON_DATA))]
     icon: nwg::Icon,
 
     #[nwg_control(icon: Some(&data.icon), tip: Some("Desktop Info"))]
