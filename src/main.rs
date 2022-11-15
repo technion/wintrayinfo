@@ -1,5 +1,5 @@
 #![deny(unsafe_code)]
-#![windows_subsystem = "windows"] 
+#![windows_subsystem = "windows"]
 
 extern crate native_windows_derive as nwd;
 extern crate native_windows_gui as nwg;
@@ -10,7 +10,7 @@ use nwg::NativeUi;
 use std::format;
 
 // Bundling the icon means we don't need to ship the file separately
-static ICON_DATA: &'static [u8] = include_bytes!("../logo.ico");
+static ICON_DATA: &[u8] = include_bytes!("../logo.ico");
 
 #[derive(Default, NwgUi)]
 pub struct SystemTray {
@@ -36,6 +36,20 @@ pub struct SystemTray {
     tray_item3: nwg::MenuItem,
 }
 
+fn get_ip_list() -> String {
+    let mut iplist = Vec::new();
+
+    for adapter in get_adapters().unwrap() {
+        for ipaddress in adapter.ip_addresses() {
+            let ipstr = ipaddress.to_string();
+            if ipstr.starts_with("192.") || ipstr.starts_with("10.") || ipstr.starts_with("172.") {
+                iplist.push(ipstr);
+            }
+        }
+    }
+    iplist.join(", ")
+}
+
 impl SystemTray {
     fn show_menu(&self) {
         let (x, y) = nwg::GlobalCursor::position();
@@ -44,23 +58,14 @@ impl SystemTray {
 
     fn hello2(&self) {
         let flags = nwg::TrayNotificationFlags::USER_ICON | nwg::TrayNotificationFlags::LARGE_ICON;
-        let mut iplist = Vec::new();
 
-        for adapter in get_adapters().unwrap() {
-            for ipaddress in adapter.ip_addresses() {
-                let ipstr = ipaddress.to_string();
-                if ipstr.starts_with("192.") || ipstr.starts_with("10.") || ipstr.starts_with("172.") {
-                    iplist.push(ipstr);
-                }
-            }
-        }
         let infostring = format!(
             "Username: {}\nHostname: {}\n",
             whoami::username(),
-            whoami::hostname(),           
+            whoami::hostname(),
         );
         self.tray.show(
-            &iplist.join(", "),
+            &get_ip_list(),
             Some(&infostring),
             Some(flags),
             Some(&self.icon),
@@ -77,4 +82,14 @@ fn main() {
     nwg::init().expect("Failed to init Native Windows GUI");
     let _ui = SystemTray::build_ui(SystemTray::default()).expect("Failed to build UI");
     nwg::dispatch_thread_events();
+}
+
+#[cfg(test)]
+mod tests {
+    use super::get_ip_list;
+    #[test]
+    fn obtains_an_ip() {
+        // This can't test much more than "actually gets data and doesn't crash"
+        assert!(get_ip_list().len() > 1)
+    }
 }
