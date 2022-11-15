@@ -11,14 +11,23 @@ env:
 
 jobs:
   build:
-
     runs-on: windows-2019
-
     steps:
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
-    - name: Run Clippy
-      run: cargo clippy
-    - name: Run tests
-      run: cargo test --verbose
+  clippy:
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - run: cargo clippy
+  tests:
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - run: cargo test --verbose
+  formatting:
+    needs: build
+    runs-on: windows-2019
+    steps:
+      - run: cargo fmt -- --check
