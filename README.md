@@ -15,3 +15,5 @@ I'll add that nearly every BGInfo user has to write a VBScript to produce pretty
 ## A Modern Version
 
 This app lives in the Windows systray, and can be clicked to produce a toast message of exactly what is required.
+
+![Example in use](example.png)
