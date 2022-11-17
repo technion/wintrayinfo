@@ -19,7 +19,7 @@ jobs:
           # Signs every build. Scans with Defender.
           # Allegedly helps build signal for the certificate with Defender AI
           $pfx = Join-Path $(Get-location) "code_signing.bin"
-          $pass =  "${{ secrets.SIGN_PFX }}" | ConvertTo-SecureString -AsPlainText -Force
+          $pass =  "${{ secrets.SIGN_CERT }}" | ConvertTo-SecureString -AsPlainText -Force
           New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($pfx, $pass)
           Set-AuthenticodeSignature -FilePath ".\target\release\wintrayinfo.exe"  -Certificate $cert
           $release = Join-Path $(Get-location) "target\release\"
