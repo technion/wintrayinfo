@@ -1,0 +1,32 @@
+name: Build Release
+on: push
+
+jobs:
+  release:
+    runs-on: windows-2019
+
+    steps:
+      - name: Checkout Binaries
+        uses: actions/checkout@v2
+      - name: Install Rust
+        uses: actions-rs/toolchain@v1
+        with:
+            toolchain: stable
+      - name: Build Binaries
+        run: cargo build --release
+      - name: Sign release
+        run: |
+          # Signs every build. Scans with Defender.
+          # Allegedly helps build signal for the certificate with Defender AI
+          $pfx = Join-Path $(Get-location) "code_signing.bin"
+          $pass =  "${{ secrets.SIGN_PFX }}" | ConvertTo-SecureString -AsPlainText -Force
+          New-Object System.Security.Cryptography.X509Certificates.X509Certificate2($pfx, $pass)
+          Set-AuthenticodeSignature -FilePath ".\target\release\wintrayinfo.exe"  -Certificate $cert
+          $release = Join-Path $(Get-location) "target\release\"
+          Start-MpScan -ScanType CustomScan -ScanPath $release
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: |
+            .\target\release\winsystray.exe
