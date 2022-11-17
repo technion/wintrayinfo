@@ -26,7 +26,7 @@ jobs:
           Start-MpScan -ScanType CustomScan -ScanPath $release
       - name: Upload Release
         uses: softprops/action-gh-release@v1
-        if: github.event_name == 'release'
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             .\target\release\winsystray.exe
