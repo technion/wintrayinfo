@@ -10,14 +10,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  prusti:
     runs-on: windows-2019
 
     steps:
     - uses: actions/checkout@v3
     - name: Add JDK
       uses: actions/setup-java@v3
+      with:
+        distribution: 'microsoft'
+        java-version: '17'
     - name: Install Prusti
       run: |
           Invoke-webrequest -Uri "https://github.com/viperproject/prusti-dev/releases/download/latest/prusti-release-windows.zip"
