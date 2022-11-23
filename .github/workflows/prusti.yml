@@ -1,0 +1,27 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Add JDK
+      uses: actions/setup-java@v3
+    - name: Install Prusti
+      run: |
+          Invoke-webrequest -Uri "https://github.com/viperproject/prusti-dev/releases/download/latest/prusti-release-windows.zip"
+          Expand-Archive -Path "prusti-release-windows.zip" .
+    - name: Run Prusti
+      run: cargo prusti
+
