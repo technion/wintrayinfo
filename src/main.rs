@@ -72,7 +72,7 @@ impl SystemTray {
         );
     }
 
-    fn exit(&self) {
+    fn exit(_: &Self) {
         nwg::stop_thread_dispatch();
     }
 }
