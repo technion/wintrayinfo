@@ -22,7 +22,7 @@ jobs:
         java-version: '17'
     - name: Install Prusti
       run: |
-          Invoke-webrequest -Uri "https://github.com/viperproject/prusti-dev/releases/download/latest/prusti-release-windows.zip"
+          Invoke-webrequest -Uri "https://github.com/viperproject/prusti-dev/releases/latest/download/prusti-release-windows.zip%22"
           Expand-Archive -Path "prusti-release-windows.zip" .
     - name: Run Prusti
       run: cargo prusti
